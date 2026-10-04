@@ -1,0 +1,77 @@
+<h1>Listado de países</h1>
+<p>Filtra por región y ordena el resultado. Cada ficha enlaza a una URL con el nombre del país.</p>
+
+<div class="toolbar">
+  <div>
+    <p class="toolbar-label" id="filtro-region">Región</p>
+    <ul class="chip-list" aria-labelledby="filtro-region">
+      <li>
+        <a
+          class="chip"
+          routerLink="/paises"
+          [queryParams]="regionQuery(null)"
+          [class.is-active]="region() === ''"
+          [attr.aria-current]="region() === '' ? 'true' : null"
+          >Todas</a
+        >
+      </li>
+      @for (item of regions; track item.slug) {
+        <li>
+          <a
+            class="chip"
+            routerLink="/paises"
+            [queryParams]="regionQuery(item.slug)"
+            [class.is-active]="region() === item.slug"
+            [attr.aria-current]="region() === item.slug ? 'true' : null"
+            >{{ item.label }}</a
+          >
+        </li>
+      }
+    </ul>
+  </div>
+  <div>
+    <p class="toolbar-label" id="filtro-orden">Orden</p>
+    <ul class="chip-list" aria-labelledby="filtro-orden">
+      <li>
+        <a
+          class="chip"
+          routerLink="/paises"
+          [queryParams]="sortQuery('nombre')"
+          [class.is-active]="sort() === 'nombre'"
+          [attr.aria-current]="sort() === 'nombre' ? 'true' : null"
+          >Nombre</a
+        >
+      </li>
+      <li>
+        <a
+          class="chip"
+          routerLink="/paises"
+          [queryParams]="sortQuery('poblacion')"
+          [class.is-active]="sort() === 'poblacion'"
+          [attr.aria-current]="sort() === 'poblacion' ? 'true' : null"
+          >Población</a
+        >
+      </li>
+    </ul>
+  </div>
+</div>
+
+@if (status() === 'error') {
+  <app-error-state [message]="error() ?? 'Error desconocido.'" (retry)="reload()" />
+} @else if (status() !== 'success') {
+  <app-skeleton-list [count]="8" />
+} @else if (countries().length === 0) {
+  <app-empty-state
+    title="No hay países en esta región"
+    message="Prueba con otra región o vuelve al listado completo."
+  />
+} @else {
+  <p class="result-count" aria-live="polite">{{ resultLabel() }}</p>
+  <ul class="card-grid">
+    @for (country of countries(); track country.cca3) {
+      <li>
+        <app-country-card [country]="country" />
+      </li>
+    }
+  </ul>
+}

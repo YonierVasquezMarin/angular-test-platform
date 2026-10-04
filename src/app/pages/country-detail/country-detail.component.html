@@ -1,0 +1,106 @@
+@if (country(); as country) {
+  <nav class="breadcrumb" aria-label="Miga de pan">
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/paises">Países</a>
+    <span aria-current="page">{{ country.name }}</span>
+  </nav>
+
+  <article class="detail">
+    <div class="detail-hero">
+      <div class="hero-flag-frame">
+        <img [ngSrc]="flagSrc()" width="320" height="213" [alt]="country.flagAlt" priority />
+      </div>
+      <div>
+        <h1>{{ country.name }}</h1>
+        <p>{{ country.officialName }}</p>
+        <p class="hero-actions">
+          <button
+            type="button"
+            class="favorite-button"
+            [attr.aria-pressed]="isFavorite()"
+            (click)="toggleFavorite()"
+          >
+            {{ isFavorite() ? 'En favoritos' : 'Favorito' }}
+          </button>
+          <a class="button" [routerLink]="['/planificar']" [queryParams]="{ pais: country.slug }"
+            >Planificar viaje</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <dl class="facts">
+      <div>
+        <dt>Capital</dt>
+        <dd>{{ country.capital }}</dd>
+      </div>
+      <div>
+        <dt>Región</dt>
+        <dd>{{ region() }}</dd>
+      </div>
+      <div>
+        <dt>Subregión</dt>
+        <dd>{{ country.subregion || 'Sin datos' }}</dd>
+      </div>
+      <div>
+        <dt>Población</dt>
+        <dd>{{ country.population | population }} habitantes</dd>
+      </div>
+      <div>
+        <dt>Superficie</dt>
+        <dd>
+          @if (country.area === null) {
+            Sin datos
+          } @else {
+            {{ country.area | population }} km²
+          }
+        </dd>
+      </div>
+    </dl>
+
+    @defer (on viewport) {
+      <section class="detail-extra" aria-label="Datos adicionales">
+        <h2>Más datos</h2>
+        @if (!country.detailLoaded && detailStatus() === 'loading') {
+          <p>Cargando monedas, idiomas y fronteras.</p>
+        } @else if (detailStatus() === 'error') {
+          <app-error-state [message]="error() ?? 'No se pudo completar la ficha.'" (retry)="reload()" />
+        } @else {
+          <h3>Idiomas</h3>
+          <p>{{ country.languages.length ? country.languages.join(', ') : 'Sin datos' }}</p>
+          <h3>Monedas</h3>
+          <p>{{ country.currencies.length ? country.currencies.join(', ') : 'Sin datos' }}</p>
+          <h3>Fronteras</h3>
+          @if (borders().length === 0) {
+            <p>No hay fronteras enlazadas.</p>
+          } @else {
+            <ul class="chip-list">
+              @for (border of borders(); track border.cca3) {
+                <li>
+                  <a class="chip" [routerLink]="['/paises', border.slug]">{{ border.name }}</a>
+                </li>
+              }
+            </ul>
+          }
+          @if (country.mapUrl) {
+            <p>
+              <a [href]="country.mapUrl" target="_blank" rel="noopener noreferrer">Ver en el mapa</a>
+            </p>
+          }
+        }
+      </section>
+    } @placeholder {
+      <div class="detail-extra-placeholder" aria-hidden="true"></div>
+    }
+  </article>
+} @else if (detailStatus() === 'missing') {
+  <app-empty-state
+    title="No encontramos ese país"
+    message="Revisa la dirección o vuelve al listado."
+  />
+  <p><a routerLink="/paises">Ir al listado</a></p>
+} @else if (detailStatus() === 'error') {
+  <app-error-state [message]="error() ?? 'Error desconocido.'" (retry)="reload()" />
+} @else {
+  <app-skeleton-list [count]="1" />
+}

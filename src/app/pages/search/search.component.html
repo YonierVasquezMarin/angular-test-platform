@@ -1,0 +1,47 @@
+<h1>Buscar países</h1>
+<p>La búsqueda espera un instante mientras escribes y consulta los países que ya están en memoria.</p>
+
+<form class="search-form" [formGroup]="form" role="search">
+  <div class="field">
+    <label for="nombre">Nombre</label>
+    <input id="nombre" type="search" formControlName="name" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label for="region-busqueda">Región</label>
+    <select id="region-busqueda" formControlName="region">
+      <option value="">Todas</option>
+      @for (region of regions; track region.slug) {
+        <option [value]="region.slug">{{ region.label }}</option>
+      }
+    </select>
+  </div>
+  <div class="field">
+    <label for="poblacion">Población mínima</label>
+    <input id="poblacion" type="number" min="0" inputmode="numeric" formControlName="minPopulation" />
+  </div>
+</form>
+
+@if (status() === 'error') {
+  <app-error-state [message]="error() ?? 'Error desconocido.'" (retry)="reload()" />
+} @else if (status() !== 'success') {
+  <app-skeleton-list [count]="4" />
+} @else if (!hasCriteria()) {
+  <app-empty-state
+    title="Empieza una búsqueda"
+    message="Escribe un nombre, elige una región o indica una población mínima."
+  />
+} @else if (results().length === 0) {
+  <app-empty-state
+    title="Sin resultados"
+    message="No hay países que coincidan con esos filtros."
+  />
+} @else {
+  <p class="result-count" aria-live="polite">{{ resultLabel() }}</p>
+  <ul class="card-grid">
+    @for (country of results(); track country.cca3) {
+      <li>
+        <app-country-card [country]="country" />
+      </li>
+    }
+  </ul>
+}

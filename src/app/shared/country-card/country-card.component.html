@@ -1,0 +1,19 @@
+<article class="country-card">
+  <a class="country-card-link" [routerLink]="['/paises', country().slug]">
+    <span class="flag-frame">
+      <img [ngSrc]="flagSrc()" width="160" height="107" alt="" />
+    </span>
+    <h2>{{ country().name }}</h2>
+  </a>
+  <p>{{ country().capital }}</p>
+  <p>{{ region() }}</p>
+  <p>{{ country().population | population }} habitantes</p>
+  <button
+    type="button"
+    class="favorite-button"
+    [attr.aria-pressed]="isFavorite()"
+    (click)="toggleFavorite()"
+  >
+    {{ isFavorite() ? 'En favoritos' : 'Favorito' }}
+  </button>
+</article>

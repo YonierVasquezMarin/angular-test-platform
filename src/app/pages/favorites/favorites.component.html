@@ -1,0 +1,24 @@
+<h1>Favoritos</h1>
+<p>Los países que marques se guardan en este navegador.</p>
+
+@if (status() === 'error') {
+  <app-error-state [message]="error() ?? 'Error desconocido.'" (retry)="reload()" />
+} @else if (!hydrated() || status() !== 'success') {
+  <p class="form-status" role="status">Cargando favoritos…</p>
+  <app-skeleton-list [count]="3" />
+} @else if (favorites().length === 0) {
+  <app-empty-state
+    title="Todavía no hay favoritos"
+    message="Abre un país del listado y márcalo para verlo aquí."
+  />
+  <p><a routerLink="/paises">Ir al listado</a></p>
+} @else {
+  <p class="result-count" aria-live="polite">{{ resultLabel() }}</p>
+  <ul class="card-grid">
+    @for (country of favorites(); track country.cca3) {
+      <li>
+        <app-country-card [country]="country" />
+      </li>
+    }
+  </ul>
+}

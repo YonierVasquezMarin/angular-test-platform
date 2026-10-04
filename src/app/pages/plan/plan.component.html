@@ -1,0 +1,111 @@
+<h1>Planificar un viaje</h1>
+<p>La nota se guarda en este navegador. Si llegas desde un país, el formulario ya lo trae elegido.</p>
+
+@if (status() === 'error') {
+  <app-error-state [message]="error() ?? 'Error desconocido.'" (retry)="reload()" />
+} @else {
+  <form id="plan-form" class="plan-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <p class="form-status" role="status" aria-live="polite">{{ savedMessage() }}</p>
+
+    <div class="field">
+      <label for="pais">País</label>
+      <select
+        id="pais"
+        formControlName="countrySlug"
+        [attr.aria-invalid]="fieldError('countrySlug') ? 'true' : 'false'"
+        [attr.aria-describedby]="fieldError('countrySlug') ? 'pais-error' : null"
+      >
+        <option value="">Elige un país</option>
+        @for (country of countries(); track country.cca3) {
+          <option [value]="country.slug">{{ country.name }}</option>
+        }
+      </select>
+      <p class="field-error" id="pais-error" [hidden]="!fieldError('countrySlug')">
+        {{ fieldError('countrySlug') }}
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="motivo">Motivo</label>
+      <select
+        id="motivo"
+        formControlName="reason"
+        [attr.aria-invalid]="fieldError('reason') ? 'true' : 'false'"
+        [attr.aria-describedby]="fieldError('reason') ? 'motivo-error' : null"
+      >
+        <option value="">Elige un motivo</option>
+        @for (reason of reasons; track reason) {
+          <option [value]="reason">{{ reasonLabels[reason] }}</option>
+        }
+      </select>
+      <p class="field-error" id="motivo-error" [hidden]="!fieldError('reason')">
+        {{ fieldError('reason') }}
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="temporada">Temporada</label>
+      <select
+        id="temporada"
+        formControlName="season"
+        [attr.aria-invalid]="fieldError('season') ? 'true' : 'false'"
+        [attr.aria-describedby]="fieldError('season') ? 'temporada-error' : null"
+      >
+        <option value="">Elige una temporada</option>
+        @for (season of seasons; track season) {
+          <option [value]="season">{{ seasonLabels[season] }}</option>
+        }
+      </select>
+      <p class="field-error" id="temporada-error" [hidden]="!fieldError('season')">
+        {{ fieldError('season') }}
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="comentario">Comentario</label>
+      <textarea
+        id="comentario"
+        formControlName="comment"
+        rows="5"
+        [attr.maxlength]="commentMax"
+        [attr.aria-invalid]="fieldError('comment') ? 'true' : 'false'"
+        [attr.aria-describedby]="
+          fieldError('comment') ? 'comentario-ayuda comentario-error' : 'comentario-ayuda'
+        "
+      ></textarea>
+      <p id="comentario-ayuda">
+        Entre {{ commentMin }} y {{ commentMax }} caracteres. Si el motivo es «otro», al menos 40.
+      </p>
+      <p class="field-error" id="comentario-error" [hidden]="!fieldError('comment')">
+        {{ fieldError('comment') }}
+      </p>
+    </div>
+
+    <button type="submit">Guardar nota</button>
+  </form>
+}
+
+<section class="notes" aria-labelledby="notas-titulo">
+  <h2 id="notas-titulo">Notas guardadas</h2>
+  @if (!hydrated()) {
+    <p role="status">Cargando notas guardadas…</p>
+  } @else if (notes().length === 0) {
+    <p>Todavía no hay notas.</p>
+  } @else {
+    <ul class="note-list">
+      @for (note of notes(); track note.id) {
+        <li>
+          <h3>
+            <a [routerLink]="['/paises', note.countrySlug]">{{ note.countryName }}</a>
+          </h3>
+          <p>{{ reasonLabels[note.reason] }} · {{ seasonLabels[note.season] }}</p>
+          <p>{{ note.comment }}</p>
+          <p>
+            <time [attr.datetime]="note.createdAt">{{ note.createdAt | date: 'longDate' }}</time>
+          </p>
+          <button type="button" (click)="remove(note.id)">Eliminar nota de {{ note.countryName }}</button>
+        </li>
+      }
+    </ul>
+  }
+</section>

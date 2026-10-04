@@ -1,0 +1,43 @@
+<header class="site-header">
+  <a class="logo" routerLink="/">Atlas de países</a>
+  <nav aria-label="Principal">
+    <ul class="nav-list">
+      <li>
+        <a
+          routerLink="/"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          >Inicio</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/paises"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          >Países</a
+        >
+      </li>
+      <li>
+        <a routerLink="/buscar" routerLinkActive="is-active" ariaCurrentWhenActive="page">Buscar</a>
+      </li>
+      <li>
+        <a routerLink="/favoritos" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+          >Favoritos</a
+        >
+      </li>
+      <li>
+        <a routerLink="/planificar" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+          >Planificar</a
+        >
+      </li>
+      <li>
+        <a routerLink="/acerca" routerLinkActive="is-active" ariaCurrentWhenActive="page"
+          >Acerca de</a
+        >
+      </li>
+    </ul>
+  </nav>
+</header>

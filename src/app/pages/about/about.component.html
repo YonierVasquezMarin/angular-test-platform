@@ -1,0 +1,42 @@
+<h1>Acerca de este proyecto</h1>
+<p>
+  Atlas de países es una aplicación de prueba para recorrer las herramientas principales de Angular,
+  las prácticas de SEO y el rendimiento medible con Lighthouse.
+</p>
+
+<section aria-labelledby="herramientas-titulo">
+  <h2 id="herramientas-titulo">Herramientas de Angular</h2>
+  <ul>
+    <li>Componentes standalone, router con carga perezosa y detección de cambios zoneless.</li>
+    <li>NgRx con store, effects, entity y DevTools. RxJS en los effects y en la búsqueda.</li>
+    <li>HttpClient con un interceptor de errores y formularios reactivos en Buscar y Planificar.</li>
+    <li>Render híbrido: páginas públicas prerenderizadas y favoritos o notas en el cliente.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="seo-titulo">
+  <h2 id="seo-titulo">SEO y URLs amigables</h2>
+  <p>
+    Cada página pública tiene un título, una descripción, una URL canónica y datos estructurados.
+    Las fichas usan el nombre en español, por ejemplo
+    <a routerLink="/paises/colombia">/paises/colombia</a>.
+  </p>
+</section>
+
+<section aria-labelledby="vitals-titulo">
+  <h2 id="vitals-titulo">Core Web Vitals</h2>
+  <ul>
+    <li>LCP: el HTML llega prerenderizado y la bandera de la ficha se pide con prioridad.</li>
+    <li>INP: la búsqueda espera 300 ms antes de filtrar, para no recalcular en cada tecla.</li>
+    <li>CLS: banderas y esqueletos reservan su tamaño, y el aviso del formulario también.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="lighthouse-titulo">
+  <h2 id="lighthouse-titulo">Accesibilidad y Lighthouse</h2>
+  <p>
+    La interfaz usa regiones con nombre, un enlace para saltar al contenido, etiquetas en los
+    controles y mensajes de error asociados a cada campo. Para auditarla, abre Chrome DevTools,
+    entra en Lighthouse y ejecuta Performance, Accessibility, SEO y Best Practices.
+  </p>
+</section>

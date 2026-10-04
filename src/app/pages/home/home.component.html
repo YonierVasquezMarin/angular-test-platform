@@ -1,0 +1,41 @@
+<section class="hero">
+  <h1>Atlas de países</h1>
+  <p>
+    Explora capitales, población y regiones. Busca un país, márcalo como favorito o deja una nota
+    de viaje.
+  </p>
+  <p class="hero-actions">
+    <a class="button" routerLink="/paises">Ver el listado</a>
+    <a class="button button-secondary" routerLink="/buscar">Buscar</a>
+  </p>
+</section>
+
+<section aria-labelledby="regiones-titulo">
+  <h2 id="regiones-titulo">Regiones</h2>
+  <ul class="chip-list">
+    @for (region of regions; track region.slug) {
+      <li>
+        <a class="chip" [routerLink]="['/paises']" [queryParams]="{ region: region.slug }">{{
+          region.label
+        }}</a>
+      </li>
+    }
+  </ul>
+</section>
+
+<section aria-labelledby="destacados-titulo">
+  <h2 id="destacados-titulo">Países más poblados</h2>
+  @if (status() === 'error') {
+    <app-error-state [message]="error() ?? 'Error desconocido.'" (retry)="reload()" />
+  } @else if (status() !== 'success') {
+    <app-skeleton-list [count]="6" />
+  } @else {
+    <ul class="card-grid">
+      @for (country of featured(); track country.cca3) {
+        <li>
+          <app-country-card [country]="country" />
+        </li>
+      }
+    </ul>
+  }
+</section>
